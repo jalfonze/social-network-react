@@ -5,6 +5,11 @@ const db = require("./db");
 const bc = require("./bc");
 const cookieSession = require("cookie-session");
 const csurf = require("csurf");
+const ses = require("./ses");
+const cryptoRandomString = require("crypto-random-string");
+const secretCode = cryptoRandomString({
+    length: 8,
+});
 
 app.use(compression());
 app.use(
@@ -102,6 +107,7 @@ app.post("/userLogin", (req, res) => {
     } else {
         db.getUser(email)
             .then((valid) => {
+                console.log("USER LOGIN", valid);
                 if (valid) {
                     bc.compare(password, valid.rows[0].password)
                         .then((result) => {
@@ -109,7 +115,7 @@ app.post("/userLogin", (req, res) => {
                                 console.log("SUCCESS");
                                 req.session.userId = valid.rows[0].id;
                                 res.json({
-                                    match: true,
+                                    success: true,
                                 });
                             } else {
                                 console.log("EMAIL OR PASSWORD NOT MATCH!");
@@ -133,6 +139,84 @@ app.post("/userLogin", (req, res) => {
                 });
             });
     }
+});
+
+app.post("/confirmEmail", (req, res) => {
+    console.log("CONFIRM EMAIL: ", req.body);
+    let { email } = req.body;
+    if (email === "") {
+        res.json({
+            success: false,
+            errMsg: "FIELD CANNOT BE EMPTY",
+        });
+    } else {
+        db.getUser(email)
+            .then((valid) => {
+                console.log(valid.rows);
+                if (valid.rows[0]) {
+                    let code = secretCode;
+                    console.log("SECRET CODE", code);
+                    db.postCode(email, code).then((response) => {
+                        console.log("CONFIRM EMAIL: ", response.rows);
+                        console.log("CONFIRM EMAIL: ", response.rows[0].email);
+                        ses.sendEmail(
+                            response.rows[0].email,
+                            "Request for Password Change",
+                            `Please type this code in the code box to confirm ${response.rows[0].secret_code},
+                            if you did not request this, please ignore this Email`
+                        );
+                        res.json({
+                            success: true,
+                            email: response.rows[0].email,
+                        });
+                    });
+                } else {
+                    res.json({
+                        success: false,
+                        errMsg: "EMAIL NOT IN DATABASE",
+                    });
+                }
+            })
+            .catch((err) => {
+                console.log("ERR IN CONFIRM EMAIL: ", err);
+                res.json({
+                    success: false,
+                    errMsg: "EMAIL NOT IN DATABASE",
+                });
+            });
+    }
+});
+
+app.post("/getCode", (req, res) => {
+    console.log("NEW PASS", req.body);
+    let { code, email, newPass } = req.body;
+    if (code === "" || newPass === "") {
+        res.json({
+            success: false,
+            errMsg: "FIELDS ARE EMPTY! THEY CANNOT BE EMPTY",
+        });
+    }
+    db.getCode(email)
+        .then((response) => {
+            console.log(response.rows[0]);
+            if (code === response.rows[0].secret_code) {
+                console.log("CODE MATCH");
+                bc.hash(newPass).then((hashedPW) => {
+                    db.updatePass(hashedPW, email).then(() => {
+                        console.log("PASSWORD CHANGE SUCCESFUL!");
+                    });
+                    res.json({
+                        success: true,
+                    });
+                });
+            } else {
+                res.json({
+                    success: false,
+                    errMsg: "CODE DID NOT MATCH",
+                });
+            }
+        })
+        .catch((err) => console.log("ERR IN GET CODE: ", err));
 });
 
 app.listen(8080, function () {

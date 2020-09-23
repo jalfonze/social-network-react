@@ -24,3 +24,37 @@ module.exports.getUser = (email) => {
         [email]
     );
 };
+
+module.exports.postCode = (email, code) => {
+    return db.query(
+        `
+        INSERT INTO secretcode (email, secret_code)
+        VALUES ($1, $2)
+        RETURNING *
+        `,
+        [email, code]
+    );
+};
+
+module.exports.getCode = (email) => {
+    return db.query(
+        `
+        SELECT * FROM secretcode
+        WHERE email = ($1)
+        ORDER BY id DESC
+        LIMIT 1
+        `,
+        [email]
+    );
+};
+
+module.exports.updatePass = (pw, email) => {
+    return db.query(
+        `
+        UPDATE users
+        SET password = ($1)
+        WHERE email = ($2)
+        `,
+        [pw, email]
+    );
+};

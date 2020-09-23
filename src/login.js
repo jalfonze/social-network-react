@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "./axios";
+import { Link } from "react-router-dom";
 
 export default class Login extends React.Component {
     constructor() {
@@ -35,7 +36,7 @@ export default class Login extends React.Component {
                     errMsg: response.data.errMsg,
                 });
             }
-            if (response.data.match) {
+            if (response.data.success) {
                 location.replace("/");
             }
         });
@@ -43,7 +44,7 @@ export default class Login extends React.Component {
 
     render() {
         return (
-            <div>
+            <React.Fragment>
                 <h3>
                     Register here to find local singer songwriters in your area!
                 </h3>
@@ -65,7 +66,13 @@ export default class Login extends React.Component {
                     ></input>
                     <button onClick={(e) => this.userLogin(e)}>Submit</button>
                 </form>
-            </div>
+                <p>
+                    Forgot your password?{" "}
+                    <Link to="/reset-password">
+                        click here to change your password
+                    </Link>
+                </p>
+            </React.Fragment>
         );
     }
 }

@@ -8,3 +8,12 @@ CREATE TABLE users (
      password VARCHAR NOT NULL,
      created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+DROP TABLE IF EXISTS secretcode CASCADE;
+
+CREATE TABLE secretcode (
+     id SERIAL PRIMARY KEY,
+     email VARCHAR NOT NULL,
+     secret_code VARCHAR NOT NULL,
+     created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
