@@ -25,6 +25,17 @@ module.exports.getUser = (email) => {
     );
 };
 
+module.exports.getUserInfo = (id) => {
+    return db.query(
+        `
+        SELECT first_name, last_name, img_url, bio  
+        FROM users
+        where id = ($1)
+        `,
+        [id]
+    );
+};
+
 module.exports.postCode = (email, code) => {
     return db.query(
         `
@@ -56,5 +67,17 @@ module.exports.updatePass = (pw, email) => {
         WHERE email = ($2)
         `,
         [pw, email]
+    );
+};
+
+module.exports.updateImg = (img, id) => {
+    return db.query(
+        `
+        UPDATE users
+        SET img_url = ($1)
+        WHERE id = ($2)
+        RETURNING img_url
+        `,
+        [img, id]
     );
 };

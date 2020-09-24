@@ -19,7 +19,7 @@ body {
     background-color: grey;
 }
 
-h3 {
+.welcome-head {
     text-align: center;
     padding: 10px;
 }
@@ -36,6 +36,26 @@ h3 {
     margin: 5px;
 }
 
-p {
+.welcome-foot {
     text-align: center;
+}
+.profile-page {
+}
+
+.uploadModal {
+    width: 400px;
+    height: 400px;
+    background-color: rgba(63, 59, 59, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    bottom: 1px;
+    left: 30%;
+    right: 70%;
+}
+
+.closeBtn {
+    color: red;
+    cursor: pointer;
 }

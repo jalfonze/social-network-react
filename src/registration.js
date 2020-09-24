@@ -52,7 +52,7 @@ export default class Registration extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <h3>
+                <h3 className="welcome-head">
                     Register here to find local singer songwriters in your area!
                 </h3>
                 <form className="registerForm">
@@ -87,7 +87,7 @@ export default class Registration extends React.Component {
                     ></input>
                     <button onClick={(e) => this.createUser(e)}>Submit</button>
                 </form>
-                <p>
+                <p className="welcome-foot">
                     Already a member? <Link to="/login">Log In</Link>
                 </p>
             </React.Fragment>

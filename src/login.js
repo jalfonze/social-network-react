@@ -45,7 +45,7 @@ export default class Login extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <h3>
+                <h3 className="welcome-head">
                     Register here to find local singer songwriters in your area!
                 </h3>
                 <form className="registerForm">
@@ -66,7 +66,7 @@ export default class Login extends React.Component {
                     ></input>
                     <button onClick={(e) => this.userLogin(e)}>Submit</button>
                 </form>
-                <p>
+                <p className="welcome-foot">
                     Forgot your password?{" "}
                     <Link to="/reset-password">
                         click here to change your password

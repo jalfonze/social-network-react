@@ -10,6 +10,11 @@ const cryptoRandomString = require("crypto-random-string");
 const secretCode = cryptoRandomString({
     length: 8,
 });
+const multer = require("multer");
+const uidSafe = require("uid-safe");
+const path = require("path");
+const s3 = require("./s3");
+//https://s3.amazonaws.com/spicedling/
 
 app.use(compression());
 app.use(
@@ -41,17 +46,31 @@ if (process.env.NODE_ENV != "production") {
 
 app.use(express.static("./public"));
 
+////UPLOADER
+
+const diskStorage = multer.diskStorage({
+    destination: function (req, file, callback) {
+        callback(null, __dirname + "/uploads");
+    },
+    filename: function (req, file, callback) {
+        uidSafe(24).then(function (uid) {
+            callback(null, uid + path.extname(file.originalname));
+        });
+    },
+});
+
+const uploader = multer({
+    storage: diskStorage,
+    limits: {
+        fileSize: 2097152,
+    },
+});
+
+////UPLOADER
+
 app.get("/welcome", (req, res) => {
     if (req.session.userId) {
         res.redirect("/");
-    } else {
-        res.sendFile(__dirname + "/index.html");
-    }
-});
-
-app.get("*", function (req, res) {
-    if (!req.session.userId) {
-        res.redirect("/welcome");
     } else {
         res.sendFile(__dirname + "/index.html");
     }
@@ -217,6 +236,42 @@ app.post("/getCode", (req, res) => {
             }
         })
         .catch((err) => console.log("ERR IN GET CODE: ", err));
+});
+
+app.get("/user", (req, res) => {
+    db.getUserInfo(req.session.userId).then((response) => {
+        // console.log(response.rows[0]);
+        let objInfo = response.rows[0];
+        res.json({ objInfo });
+    });
+});
+
+app.get("*", function (req, res) {
+    if (!req.session.userId) {
+        res.redirect("/welcome");
+    } else {
+        res.sendFile(__dirname + "/index.html");
+    }
+});
+
+app.post("/uploadImg", uploader.single("file"), s3.upload, (req, res) => {
+    console.log("REQ FILE!", req.file);
+    let { filename } = req.file;
+    let url = `https://s3.amazonaws.com/spicedling/${filename}`;
+    console.log("URL IMAGE", url);
+    if (req.file) {
+        db.updateImg(url, req.session.userId).then((response) => {
+            console.log(response.rows[0]);
+            res.json({
+                img_url: response.rows[0].img_url,
+            });
+        });
+    } else {
+        res.json({
+            success: false,
+            errMsg: "Image not available",
+        });
+    }
 });
 
 app.listen(8080, function () {
