@@ -2,15 +2,20 @@ import React from "react";
 import axios from "./axios";
 import ProfilePic from "./profile-pic";
 import Uploader from "./uploader";
+import Profile from "./profile";
 
 export default class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            error: true,
+            error: false,
             errMsg: "",
             showUploader: false,
             file: null,
+            bio: null,
+            first_name: "",
+            last_name: "",
+            img_url: "",
         };
     }
 
@@ -23,17 +28,20 @@ export default class App extends React.Component {
     }
 
     updateImg(image) {
+        // console.log("UPDATE", image);
         this.setState({
             img_url: image,
         });
+        // console.log("UPDATE", this.state);
     }
 
     showModal() {
-        // console.log("CLICK");
+        console.log("APPCLICK");
         this.setState({
             showUploader: true,
         });
     }
+
     hideModal() {
         // console.log("CLICK");
         this.setState({
@@ -45,12 +53,12 @@ export default class App extends React.Component {
         return (
             <React.Fragment>
                 <div className="profile-page">
-                    <img src="/logo.png" alt="logo" width="250px"></img>
-                    <ProfilePic
-                        {...this.state}
-                        showModal={() => this.showModal()}
-                    />
-
+                    {this.state.first_name && (
+                        <Profile
+                            {...this.state}
+                            modalShow={() => this.showModal()}
+                        />
+                    )}
                     {this.state.showUploader && (
                         <Uploader
                             hideModal={() => this.hideModal()}

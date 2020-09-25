@@ -43,7 +43,7 @@ export default class Uploader extends React.Component {
                     img_url: response.data.img_url,
                 });
                 this.changePic();
-                console.log(this.state.url_img);
+                // console.log(this.state.url_img);
                 this.closeModal();
             })
             .catch((err) => {
@@ -61,9 +61,9 @@ export default class Uploader extends React.Component {
                     <p onClick={this.props.hideModal} className="closeBtn">
                         close
                     </p>
-                    <form>
+                    <h1>Update Profile Picture</h1>
+                    <form className="updatePic">
                         {this.state.error && <p>{this.state.errMsg}</p>}
-                        <h1>Upload an image!</h1>
                         <input
                             onChange={(e) => this.handleChange(e)}
                             type="file"
