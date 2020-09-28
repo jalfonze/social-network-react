@@ -28,7 +28,7 @@ module.exports.getUser = (email) => {
 module.exports.getUserInfo = (id) => {
     return db.query(
         `
-        SELECT first_name, last_name, img_url, bio  
+        SELECT id, first_name, last_name, img_url, bio  
         FROM users
         where id = ($1)
         `,
@@ -79,5 +79,27 @@ module.exports.updateImg = (img, id) => {
         RETURNING img_url
         `,
         [img, id]
+    );
+};
+
+module.exports.updateBio = (bio, id) => {
+    return db.query(
+        `
+        UPDATE users
+        SET bio = ($1)
+        WHERE id = ($2)
+        RETURNING bio
+        `,
+        [bio, id]
+    );
+};
+
+module.exports.selectAllUsers = () => {
+    return db.query(
+        `
+        SELECT * FROM users
+        ORDER BY id DESC
+        LIMIT 20
+        `
     );
 };

@@ -246,14 +246,6 @@ app.get("/user", (req, res) => {
     });
 });
 
-app.get("*", function (req, res) {
-    if (!req.session.userId) {
-        res.redirect("/welcome");
-    } else {
-        res.sendFile(__dirname + "/index.html");
-    }
-});
-
 app.post("/uploadImg", uploader.single("file"), s3.upload, (req, res) => {
     console.log("REQ FILE!", req.file);
     let { filename } = req.file;
@@ -271,6 +263,60 @@ app.post("/uploadImg", uploader.single("file"), s3.upload, (req, res) => {
             success: false,
             errMsg: "Image not available",
         });
+    }
+});
+
+app.post("/updateBio", (req, res) => {
+    console.log("UPDATE  BIO", req.body);
+    db.updateBio(req.body.bio, req.session.userId).then((response) => {
+        console.log("UPDAT BIO RESPONSE", response.rows[0].bio);
+        let bioResponse = response.rows[0].bio;
+        res.json({
+            bio: bioResponse,
+        });
+    });
+});
+
+app.get("/user/:id.json", (req, res) => {
+    console.log("OTHER PROFILE ID", req.params.id);
+    db.getUserInfo(req.params.id)
+        .then((response) => {
+            console.log("OTHER PROFILE INFO", response.rows[0]);
+            let otherUserInfo = response.rows[0];
+            if (req.session.userId == req.params.id) {
+                // console.log("TRUE");
+                res.json({
+                    redirect: "true",
+                });
+            } else {
+                res.json({ otherUserInfo });
+                // console.log("WHAT", { otherUserInfo });
+            }
+        })
+        .catch((err) => {
+            console.log("ERROR IN OTHER USER INFO", err);
+            res.json({
+                success: false,
+                errMsg: "User not found",
+            });
+        });
+});
+
+app.get("/all-users", (req, res) => {
+    db.selectAllUsers().then((response) => {
+        console.log("ALL USERS", response.rows);
+        let allUsersArray = response.rows;
+        res.json({
+            allUsersArray,
+        });
+    });
+});
+
+app.get("*", function (req, res) {
+    if (!req.session.userId) {
+        res.redirect("/welcome");
+    } else {
+        res.sendFile(__dirname + "/index.html");
     }
 });
 

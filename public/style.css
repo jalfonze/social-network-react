@@ -105,3 +105,8 @@ body {
 .profileBody {
     display: flex;
 }
+
+.editBtn {
+    text-decoration: underline;
+    cursor: pointer;
+}

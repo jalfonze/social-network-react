@@ -1,10 +1,6 @@
 import React from "react";
 
-export default function ProfilePic({
-    img_url,
-
-    showModal,
-}) {
+export default function ProfilePic({ img_url, showModal }) {
     if (!img_url) {
         img_url = "/default-photo.jpg";
     }
@@ -12,7 +8,12 @@ export default function ProfilePic({
     return (
         <React.Fragment>
             <div className="profileInfo">
-                <img onClick={showModal} src={img_url} alt="logo" height="95" />
+                <img
+                    onClick={showModal}
+                    src={img_url}
+                    alt="profile-pic"
+                    height="95"
+                />
             </div>
         </React.Fragment>
     );
