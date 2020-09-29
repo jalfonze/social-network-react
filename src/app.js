@@ -6,6 +6,7 @@ import Profile from "./profile";
 import { BrowserRouter, Route } from "react-router-dom";
 import OtherProfile from "./other-profile";
 import Friends from "./friends";
+import FindPeople from "./find-people";
 
 export default class App extends React.Component {
     constructor(props) {
@@ -67,7 +68,6 @@ export default class App extends React.Component {
                         width="250px"
                         height="95px"
                     ></img>
-
                     <ProfilePic
                         img_url={this.state.img_url}
                         showModal={() => this.showModal()}
@@ -94,6 +94,7 @@ export default class App extends React.Component {
                             )}
                         />
                         <Route path="/user/:id" component={OtherProfile} />
+                        <Route path="/users" component={FindPeople} />
                     </div>
                 </BrowserRouter>
                 {this.state.showUploader && (
@@ -102,7 +103,7 @@ export default class App extends React.Component {
                         updatePic={(img) => this.updateImg(img)}
                     />
                 )}
-                <Friends />
+                {/* <Friends /> */}
             </React.Fragment>
         );
     }

@@ -94,12 +94,22 @@ module.exports.updateBio = (bio, id) => {
     );
 };
 
-module.exports.selectAllUsers = () => {
+module.exports.selectAllUsers = (val) => {
+    return db.query(
+        `
+        SELECT first_name, last_name, img_url, bio FROM users
+        WHERE first_name ILIKE $1
+        LIMIT 10
+        `,
+        [val + "%"]
+    );
+};
+module.exports.recentUsers = () => {
     return db.query(
         `
         SELECT * FROM users
         ORDER BY id DESC
-        LIMIT 20
+        LIMIT 5
         `
     );
 };

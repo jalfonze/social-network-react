@@ -110,3 +110,8 @@ body {
     text-decoration: underline;
     cursor: pointer;
 }
+
+.other-users {
+    display: flex;
+    padding: 10px;
+}

@@ -14,6 +14,7 @@ const multer = require("multer");
 const uidSafe = require("uid-safe");
 const path = require("path");
 const s3 = require("./s3");
+const { error } = require("console");
 //https://s3.amazonaws.com/spicedling/
 
 app.use(compression());
@@ -283,10 +284,10 @@ app.get("/user/:id.json", (req, res) => {
         .then((response) => {
             console.log("OTHER PROFILE INFO", response.rows[0]);
             let otherUserInfo = response.rows[0];
-            if (req.session.userId == req.params.id) {
+            if (req.session.userId == req.params.id || !response.rows[0]) {
                 // console.log("TRUE");
                 res.json({
-                    redirect: "true",
+                    redirect: true,
                 });
             } else {
                 res.json({ otherUserInfo });
@@ -298,19 +299,31 @@ app.get("/user/:id.json", (req, res) => {
             res.json({
                 success: false,
                 errMsg: "User not found",
+                redirect: true,
             });
         });
 });
 
-app.get("/all-users", (req, res) => {
-    db.selectAllUsers().then((response) => {
-        console.log("ALL USERS", response.rows);
-        let allUsersArray = response.rows;
-        res.json({
-            allUsersArray,
+app.get("/users/:val.json", (req, res) => {
+    console.log("VALA PARAMS", req.params.val);
+    let val = req.params.val;
+    if (val === "undefined") {
+        console.log("SOMETHING");
+        db.recentUsers().then((response) => {
+            console.log("RECENTS ", response.rows);
+            res.json(response.rows);
         });
-    });
+    } else {
+        db.selectAllUsers(req.params.val)
+            .then((response) => {
+                // console.log("SEARCHED USERS", response.rows);
+                res.json(response.rows);
+            })
+            .catch((err) => console.log("ERROR IN SEARCH USER", err));
+    }
 });
+
+app.get("/recents", (req, res) => {});
 
 app.get("*", function (req, res) {
     if (!req.session.userId) {
