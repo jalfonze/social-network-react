@@ -7,7 +7,7 @@ export default function ProfilePic({ img_url, showModal }) {
 
     return (
         <React.Fragment>
-            <div className="profileInfo">
+            <div className="profilePic">
                 <img
                     onClick={showModal}
                     src={img_url}

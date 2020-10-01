@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Axios from "./axios";
+import { Link } from "react-router-dom";
 
 export default function FindPeople() {
     const [person, findPerson] = useState();
@@ -14,22 +15,18 @@ export default function FindPeople() {
         if (person == "") {
             return;
         } else {
-            Axios.get("/users/" + person + ".json")
-                .then((response) => {
-                    // console.log("FIRST MOUNT RESPONSE", response.data);
-                    setResults(response.data);
-                })
-                .catch((err) => console.log("ERRORI IN SEARCH USERS", err));
+            (async () => {
+                try {
+                    const { data } = await Axios.get(
+                        "/users/" + person + ".json"
+                    );
+                    setResults(data);
+                    console.log("DATA FROM SEARCH", data);
+                } catch (err) {
+                    console.log("ERROR IN USE EFECT", err);
+                }
+            })();
         }
-        // (async () => {
-        //     try {
-        //         const { data } = await Axios.get("/users/" + person + ".json");
-        //         setResults(data);
-        //         // console.log("DATA FROM SEARCH", data);
-        //     } catch (err) {
-        //         console.log("ERROR IN USE EFECT", err);
-        //     }
-        // })();
     }, [person]);
 
     const handleChange = (e) => {
@@ -38,37 +35,50 @@ export default function FindPeople() {
     };
 
     return (
-        // console.log("SEARCH RESULTS", results),
-        // console.log(Array.isArray(results)),
-        <div>
-            <h1>Search</h1>
-            <input
-                onChange={handleChange}
-                type="text"
-                name="person"
-                placeholder="Search user"
-            />
-            <h1>Our most recent signers</h1>
-            {/* {!results && <h1>Loading...</h1>} */}
-            {(!results && <h1>Loading...</h1>) ||
-                (results &&
-                    results.map((user, i) => {
-                        return (
-                            <div className="other-users" key={i}>
-                                <img
-                                    height="100px"
-                                    key={i}
-                                    src={user.img_url}
-                                ></img>
-                                <div>
-                                    <h2 key={i}>
-                                        {user.first_name} {user.last_name}
-                                    </h2>
-                                    <p>{user.bio}</p>
+        console.log("SEARCH RESULTS", results),
+        (
+            // console.log(Array.isArray(results)),
+            <div>
+                <h1>Search</h1>
+                <input
+                    onChange={handleChange}
+                    type="text"
+                    name="person"
+                    placeholder="Search user"
+                />
+                <h1>Our most recent signers</h1>
+                {/* {!results && <h1>Loading...</h1>} */}
+                {(!results && <h1>Loading...</h1>) ||
+                    (results &&
+                        results.map((user, i) => {
+                            return (
+                                <div className="other-users" key={i}>
+                                    <img
+                                        height="100px"
+                                        key={user.id}
+                                        src={user.img_url}
+                                    ></img>
+                                    {!user.img_url && (
+                                        <img
+                                            height="100px"
+                                            key={i}
+                                            src="/default-photo.jpg"
+                                        ></img>
+                                    )}
+                                    <div>
+                                        <h2 key={i}>
+                                            <Link to={"/user/" + user.id}>
+                                                {user.first_name}{" "}
+                                                {user.last_name}
+                                            </Link>
+                                        </h2>
+                                        {/* <p>{user.bio}</p>
+                                        {!user.bio && <p>No Bio</p>} */}
+                                    </div>
                                 </div>
-                            </div>
-                        );
-                    }))}
-        </div>
+                            );
+                        }))}
+            </div>
+        )
     );
 }

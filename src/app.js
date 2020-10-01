@@ -7,6 +7,7 @@ import { BrowserRouter, Route } from "react-router-dom";
 import OtherProfile from "./other-profile";
 import Friends from "./friends";
 import FindPeople from "./find-people";
+import { Link } from "react-router-dom";
 
 export default class App extends React.Component {
     constructor(props) {
@@ -61,19 +62,25 @@ export default class App extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <div className="nav">
-                    <img
-                        src="/logo.png"
-                        alt="logo"
-                        width="250px"
-                        height="95px"
-                    ></img>
-                    <ProfilePic
-                        img_url={this.state.img_url}
-                        showModal={() => this.showModal()}
-                    />
-                </div>
                 <BrowserRouter>
+                    <div className="nav">
+                        <img
+                            src="/logo.png"
+                            alt="logo"
+                            width="250px"
+                            height="95px"
+                        ></img>
+                        <h2>
+                            <Link to="/">My Profile</Link>
+                        </h2>
+                        <h2>
+                            <Link to="/users">Find Friends</Link>
+                        </h2>
+                        <ProfilePic
+                            img_url={this.state.img_url}
+                            showModal={() => this.showModal()}
+                        />
+                    </div>
                     <div>
                         <Route
                             exact
@@ -93,17 +100,26 @@ export default class App extends React.Component {
                                 </React.Fragment>
                             )}
                         />
-                        <Route path="/user/:id" component={OtherProfile} />
+                        <Route
+                            path="/user/:id"
+                            render={(props) => (
+                                <OtherProfile
+                                    key={props.match.url}
+                                    match={props.match}
+                                    history={props.history}
+                                />
+                            )}
+                        />
                         <Route path="/users" component={FindPeople} />
                     </div>
+                    {this.state.showUploader && (
+                        <Uploader
+                            hideModal={() => this.hideModal()}
+                            updatePic={(img) => this.updateImg(img)}
+                        />
+                    )}
+                    {/* <Friends /> */}
                 </BrowserRouter>
-                {this.state.showUploader && (
-                    <Uploader
-                        hideModal={() => this.hideModal()}
-                        updatePic={(img) => this.updateImg(img)}
-                    />
-                )}
-                {/* <Friends /> */}
             </React.Fragment>
         );
     }

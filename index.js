@@ -14,7 +14,7 @@ const multer = require("multer");
 const uidSafe = require("uid-safe");
 const path = require("path");
 const s3 = require("./s3");
-const { error } = require("console");
+
 //https://s3.amazonaws.com/spicedling/
 
 app.use(compression());
@@ -323,7 +323,84 @@ app.get("/users/:val.json", (req, res) => {
     }
 });
 
-app.get("/recents", (req, res) => {});
+app.get("/initial-status/:otherId.json", (req, res) => {
+    let other = parseInt(req.params.otherId);
+    console.log("OTHER USER ID REQ", req.session.userId, other);
+    db.getRequest(other, req.session.userId)
+        .then((response) => {
+            console.log("INITIAL RESPONDSE", response.rows);
+            if (response.rows.length == 0) {
+                console.log("EMPTY ARRAY");
+                res.json({
+                    btnMsg: "add",
+                });
+            } else if (
+                req.session.userId === response.rows[0].recipient_id &&
+                !response.rows[0].accepted
+            ) {
+                console.log("ACCEPTS");
+                console.log(response.rows);
+                res.json({
+                    btnMsg: "accept",
+                });
+            } else if (
+                req.session.userId === response.rows[0].sender_id &&
+                !response.rows[0].accepted
+            ) {
+                console.log("CANCEL");
+                res.json({
+                    btnMsg: "cancel",
+                });
+            } else if (response.rows[0].accepted) {
+                console.log("ACCEPTED");
+                res.json({
+                    btnMsg: "end",
+                });
+            }
+        })
+        .catch((err) => console.log("ERROR IN GET INITIAL", err));
+});
+
+app.post("/send-request", (req, res) => {
+    console.log(req.body);
+    if (req.body.btnMsg === "Send friend request") {
+        db.sendRequest(req.body.viewerId, req.session.userId).then(
+            (response) => {
+                console.log("SEND REQ", response.rows);
+                if (req.session.userId === response.rows[0].recipient_id) {
+                    console.log("ACCEPTS");
+                    console.log(response.rows);
+                    res.json({
+                        btnMsg: "accept",
+                    });
+                } else if (req.session.userId === response.rows[0].sender_id) {
+                    console.log("CANCEL");
+                    res.json({
+                        btnMsg: "cancel",
+                    });
+                }
+            }
+        );
+    } else if (req.body.btnMsg === "Cancel request") {
+        db.cancelRequest(req.session.userId, req.body.viewerId).then(() => {
+            res.json({
+                btnMsg: "add",
+            });
+        });
+    } else if (req.body.btnMsg === "Accept request") {
+        db.acceptRequest(req.session.userId, req.body.viewerId).then(() => {
+            res.json({
+                btnMsg: "end",
+            });
+        });
+    } else if (req.body.btnMsg === "Unfriend") {
+        db.deleteFriend(req.body.viewerId, req.session.userId).then(() => {
+            res.json({
+                btnMsg: "add",
+            });
+        });
+    }
+});
 
 app.get("*", function (req, res) {
     if (!req.session.userId) {

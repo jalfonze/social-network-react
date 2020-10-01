@@ -19,3 +19,12 @@ CREATE TABLE secretcode (
      secret_code VARCHAR NOT NULL,
      created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+DROP TABLE IF EXISTS friendships CASCADE;
+
+CREATE TABLE friendships(
+      id SERIAL PRIMARY KEY,
+      sender_id INT REFERENCES users(id) NOT NULL,
+      recipient_id INT REFERENCES users(id) NOT NULL,
+      accepted BOOLEAN DEFAULT false
+  );

@@ -97,7 +97,7 @@ module.exports.updateBio = (bio, id) => {
 module.exports.selectAllUsers = (val) => {
     return db.query(
         `
-        SELECT first_name, last_name, img_url, bio FROM users
+        SELECT id, first_name, last_name, img_url, bio FROM users
         WHERE first_name ILIKE $1
         LIMIT 10
         `,
@@ -111,5 +111,61 @@ module.exports.recentUsers = () => {
         ORDER BY id DESC
         LIMIT 5
         `
+    );
+};
+
+module.exports.getRequest = (recieveId, senderId) => {
+    // console.log(recieveId, senderId);
+    return db.query(
+        `
+        SELECT * FROM friendships
+        WHERE (recipient_id = $1 AND sender_id = $2)
+        OR (recipient_id = $2 AND sender_id = $1)
+        `,
+        [recieveId, senderId]
+    );
+};
+
+module.exports.sendRequest = (recieveId, senderId) => {
+    console.log("SEND", recieveId, senderId);
+    return db.query(
+        `
+        INSERT INTO friendships (recipient_id, sender_id)
+        VALUES ($1, $2)
+        RETURNING recipient_id, sender_id
+        `,
+        [recieveId, senderId]
+    );
+};
+
+module.exports.cancelRequest = (senderId, recieveId) => {
+    return db.query(
+        `
+        DELETE FROM friendships
+        WHERE (sender_id = ($1) AND recipient_id = ($2))
+        `,
+        [senderId, recieveId]
+    );
+};
+
+module.exports.acceptRequest = (senderId, recieveId) => {
+    return db.query(
+        `
+        UPDATE friendships
+        SET accepted = true
+        WHERE (recipient_id = $1 AND sender_id = $2)
+        `,
+        [senderId, recieveId]
+    );
+};
+
+module.exports.deleteFriend = (senderId, recieveId) => {
+    return db.query(
+        `
+        DELETE FROM friendships
+        WHERE (sender_id = ($1) AND recipient_id = ($2))
+        AND (recipient_id = $2 AND sender_id = $1)
+        `,
+        [senderId, recieveId]
     );
 };
