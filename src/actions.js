@@ -1,6 +1,6 @@
-import axios from "axios";
+import axios from "./axios";
 
-export default async function recieveRequests() {
+export async function recieveRequests() {
     const { data } = await axios.get("/match-friends");
     console.log(data);
     return {
@@ -8,17 +8,31 @@ export default async function recieveRequests() {
         users: data.users,
     };
 }
-// export default async function acceptRequests() {
-//     const { data } = await axios.get("/user");
-//     return {
-//         type: "RECEIVE_USERS",
-//         users: data.users,
-//     };
-// }
-// export default async function unFriend() {
-//     const { data } = await axios.get("/user");
-//     return {
-//         type: "RECEIVE_USERS",
-//         users: data.users,
-//     };
-// }
+
+export async function acceptRequests(id) {
+    console.log(id);
+    let acceptId = {
+        acceptId: id,
+        btnMsg: "Accept request",
+    };
+    const { data } = await axios.post("/send-request", acceptId);
+    return {
+        type: "ACCEPT_FRIEND",
+        users: data.users,
+        userId: id,
+    };
+}
+export async function unFriend(id) {
+    console.log(id);
+    let deleteId = {
+        deleteId: id,
+        btnMsg: "Unfriend",
+    };
+    const { data } = await axios.post("/send-request", deleteId);
+
+    return {
+        type: "UNFRIEND",
+        users: data.users,
+        userId: id,
+    };
+}

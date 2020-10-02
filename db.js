@@ -149,6 +149,7 @@ module.exports.cancelRequest = (senderId, recieveId) => {
 };
 
 module.exports.acceptRequest = (senderId, recieveId) => {
+    console.log(recieveId);
     return db.query(
         `
         UPDATE friendships
@@ -160,11 +161,12 @@ module.exports.acceptRequest = (senderId, recieveId) => {
 };
 
 module.exports.deleteFriend = (senderId, recieveId) => {
+    console.log(senderId, recieveId);
     return db.query(
         `
         DELETE FROM friendships
-        WHERE (sender_id = ($1) AND recipient_id = ($2))
-        AND (recipient_id = $2 AND sender_id = $1)
+        WHERE (sender_id = $1 AND recipient_id = $2)
+        OR (recipient_id = $1 AND sender_id = $2)
         `,
         [senderId, recieveId]
     );

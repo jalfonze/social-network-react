@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import recieveRequests from "./actions";
+import { recieveRequests, acceptRequests, unFriend } from "./actions";
 
 export default function Friends() {
     const dispatch = useDispatch();
@@ -18,6 +18,17 @@ export default function Friends() {
         console.log("helo");
         dispatch(recieveRequests());
     }, []);
+
+    const acceptFriend = (id) => {
+        console.log("clickclick");
+        console.log(id);
+        dispatch(acceptRequests(id));
+    };
+    const deleteFriend = (id) => {
+        console.log("clickclick");
+        console.log(id);
+        dispatch(unFriend(id));
+    };
 
     console.log("USERS ACTIONS", usersTrue, usersFalse);
 
@@ -36,11 +47,21 @@ export default function Friends() {
                                             src={user.img_url}
                                         ></img>
                                     </div>
-                                    <h3 key={i}>
-                                        <Link to={"/user/" + user.id}>
-                                            {user.first_name} {user.last_name}
-                                        </Link>
-                                    </h3>
+                                    <div className="req-text">
+                                        <h3 key={i}>
+                                            <Link to={"/user/" + user.id}>
+                                                {user.first_name}{" "}
+                                                {user.last_name}
+                                            </Link>
+                                        </h3>
+                                        <p
+                                            onClick={() =>
+                                                deleteFriend(user.id)
+                                            }
+                                        >
+                                            Unfriend
+                                        </p>
+                                    </div>
                                 </div>
                             );
                         })}
@@ -57,11 +78,21 @@ export default function Friends() {
                                             src={user.img_url}
                                         ></img>
                                     </div>
-                                    <h3 key={i}>
-                                        <Link to={"/user/" + user.id}>
-                                            {user.first_name} {user.last_name}
-                                        </Link>
-                                    </h3>
+                                    <div className="req-text">
+                                        <h3 key={i}>
+                                            <Link to={"/user/" + user.id}>
+                                                {user.first_name}{" "}
+                                                {user.last_name}
+                                            </Link>
+                                        </h3>
+                                        <p
+                                            onClick={() =>
+                                                acceptFriend(user.id)
+                                            }
+                                        >
+                                            Accept
+                                        </p>
+                                    </div>
                                 </div>
                             );
                         })}

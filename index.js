@@ -388,13 +388,21 @@ app.post("/send-request", (req, res) => {
             });
         });
     } else if (req.body.btnMsg === "Accept request") {
-        db.acceptRequest(req.session.userId, req.body.viewerId).then(() => {
+        db.acceptRequest(
+            req.session.userId,
+            req.body.viewerId || req.body.acceptId
+        ).then(() => {
             res.json({
                 btnMsg: "end",
             });
         });
     } else if (req.body.btnMsg === "Unfriend") {
-        db.deleteFriend(req.body.viewerId, req.session.userId).then(() => {
+        console.log(req.body, req.session);
+        db.deleteFriend(
+            req.body.viewerId || req.body.deleteId,
+            req.session.userId
+        ).then(() => {
+            console.log("ARRIVED");
             res.json({
                 btnMsg: "add",
             });
@@ -404,7 +412,7 @@ app.post("/send-request", (req, res) => {
 
 app.get("/match-friends", (req, res) => {
     db.matchFriend(req.session.userId).then((response) => {
-        console.log(response.rows);
+        console.log("MATCH FRIENDS", response.rows);
         let friendsArr = { users: response.rows };
 
         res.json(friendsArr);

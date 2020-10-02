@@ -213,3 +213,7 @@ body {
 .req-info {
     display: flex;
 }
+.req-text {
+    display: flex;
+    flex-direction: column;
+}
