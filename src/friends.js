@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { recieveRequests, acceptRequests, unFriend } from "./actions";
+import { recieveRequests, acceptRequests, unFriend, denyId } from "./actions";
 
 export default function Friends() {
     const dispatch = useDispatch();
@@ -28,6 +28,11 @@ export default function Friends() {
         console.log("clickclick");
         console.log(id);
         dispatch(unFriend(id));
+    };
+    const denyReq = (id) => {
+        console.log("clickclick");
+        console.log(id);
+        dispatch(denyId(id));
     };
 
     console.log("USERS ACTIONS", usersTrue, usersFalse);
@@ -91,6 +96,9 @@ export default function Friends() {
                                             }
                                         >
                                             Accept
+                                        </p>
+                                        <p onClick={() => denyReq(user.id)}>
+                                            Deny
                                         </p>
                                     </div>
                                 </div>

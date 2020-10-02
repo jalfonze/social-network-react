@@ -1,5 +1,3 @@
-import { IdentityStore } from "aws-sdk";
-
 export default function (state = {}, action) {
     if (action.type == "RECEIVE_USERS") {
         state = Object.assign({}, state, {

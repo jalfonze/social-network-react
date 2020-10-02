@@ -36,3 +36,17 @@ export async function unFriend(id) {
         userId: id,
     };
 }
+export async function denyId(id) {
+    console.log(id);
+    let deleteId = {
+        deleteId: id,
+        btnMsg: "Unfriend",
+    };
+    const { data } = await axios.post("/send-request", deleteId);
+
+    return {
+        type: "UNFRIEND",
+        users: data.users,
+        userId: id,
+    };
+}
