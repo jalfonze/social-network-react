@@ -12,8 +12,9 @@ export default function Welcome() {
 
     return (
         <div>
-            <h1 className="title">Welcome to muSEEQ</h1>
+            <img className="title" src="/logo3.png"></img>
             {/* <Name cuteAnimal={cuteAnimal} /> */}
+
             <HashRouter>
                 <React.Fragment>
                     <Route exact path="/" component={Registration} />

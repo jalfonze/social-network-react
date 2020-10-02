@@ -65,17 +65,20 @@ export default class App extends React.Component {
                 <BrowserRouter>
                     <div className="nav">
                         <img
-                            src="/logo.png"
+                            src="/logo3.png"
                             alt="logo"
                             width="250px"
                             height="95px"
                         ></img>
-                        <h2>
+                        <h4>
                             <Link to="/">My Profile</Link>
-                        </h2>
-                        <h2>
-                            <Link to="/users">Find Friends</Link>
-                        </h2>
+                        </h4>
+                        <h4>
+                            <Link to="/users">Find People</Link>
+                        </h4>
+                        <h4>
+                            <Link to="/friends-list">My Friends</Link>
+                        </h4>
                         <ProfilePic
                             img_url={this.state.img_url}
                             showModal={() => this.showModal()}
@@ -111,6 +114,7 @@ export default class App extends React.Component {
                             )}
                         />
                         <Route path="/users" component={FindPeople} />
+                        <Route path="/friends-list" component={Friends} />
                     </div>
                     {this.state.showUploader && (
                         <Uploader
@@ -118,7 +122,6 @@ export default class App extends React.Component {
                             updatePic={(img) => this.updateImg(img)}
                         />
                     )}
-                    {/* <Friends /> */}
                 </BrowserRouter>
             </React.Fragment>
         );

@@ -27,11 +27,10 @@ export default class Profile extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <div className="linediv">
-                    <div className="line"></div>
-                </div>
                 <div className="profileBody">
-                    <img src={this.props.img_url} width="300px" />
+                    <div className="imageBox">
+                        <img src={this.props.img_url} width="300px" />
+                    </div>
                     <div className="profileInfo">
                         <h1>
                             {this.state.first_name} {this.state.last_name}

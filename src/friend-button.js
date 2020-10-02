@@ -42,5 +42,9 @@ export default function FriendButton(props) {
         });
     };
 
-    return <button onClick={sendRequest}>{buttonText}</button>;
+    return (
+        <button className="reqBtn" onClick={sendRequest}>
+            {buttonText}
+        </button>
+    );
 }

@@ -56,12 +56,20 @@ export default class BioEdit extends React.Component {
         });
     }
 
+    charCount(e) {
+        console.log(e.target.value.length);
+
+        this.setState({
+            charCount: e.target.value.length,
+        });
+    }
+
     render() {
         // console.log("BIO STATE", this.state);
         return (
             <React.Fragment>
                 {!this.state.textAreaVisible && (
-                    <h2 onClick={() => this.editBio()}>{this.state.bio}</h2>
+                    <h3 onClick={() => this.editBio()}>{this.state.bio}</h3>
                 )}
                 {this.state.editBtn && !this.state.textAreaVisible && (
                     <p className="editBtn" onClick={() => this.editBio()}>
@@ -72,10 +80,18 @@ export default class BioEdit extends React.Component {
                     <form>
                         <textarea
                             onChange={(e) => this.handleChange(e)}
+                            onKeyUp={(e) => this.charCount(e)}
                             name="bio"
-                            rows="10"
+                            rows="6"
                             cols="40"
+                            maxLength="150"
                         ></textarea>
+                        <div className="counters">
+                            <span id="characterCount">
+                                {this.state.charCount || 0}
+                            </span>
+                            <span className="maxLength">/ 150</span>
+                        </div>
                         <p
                             onClick={() => this.closeText()}
                             className="closeBtn"

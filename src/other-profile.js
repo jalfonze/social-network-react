@@ -40,12 +40,14 @@ export default class OtherProfile extends React.Component {
         return (
             <React.Fragment>
                 <div className="profileBody">
-                    {this.state.img_url && (
-                        <img src={this.state.img_url} width="300px" />
-                    )}
-                    {!this.state.img_url && (
-                        <img src="/default-photo.jpg" width="300px" />
-                    )}
+                    <div className="imageBox">
+                        {this.state.img_url && (
+                            <img src={this.state.img_url} width="300px" />
+                        )}
+                        {!this.state.img_url && (
+                            <img src="/default-photo.jpg" width="300px" />
+                        )}
+                    </div>
                     <div className="profileInfo">
                         <h1>
                             {this.state.first_name} {this.state.last_name}

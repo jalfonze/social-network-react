@@ -241,7 +241,7 @@ app.post("/getCode", (req, res) => {
 
 app.get("/user", (req, res) => {
     db.getUserInfo(req.session.userId).then((response) => {
-        // console.log(response.rows[0]);
+        console.log(response.rows[0]);
         let objInfo = response.rows[0];
         res.json({ objInfo });
     });
@@ -400,6 +400,15 @@ app.post("/send-request", (req, res) => {
             });
         });
     }
+});
+
+app.get("/match-friends", (req, res) => {
+    db.matchFriend(req.session.userId).then((response) => {
+        console.log(response.rows);
+        let friendsArr = { users: response.rows };
+
+        res.json(friendsArr);
+    });
 });
 
 app.get("*", function (req, res) {

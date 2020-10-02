@@ -72,6 +72,9 @@ export default class Login extends React.Component {
                         click here to change your password
                     </Link>
                 </p>
+                <p className="welcome-foot">
+                    No Account? <Link to="/">click here to sign up!</Link>
+                </p>
             </React.Fragment>
         );
     }
