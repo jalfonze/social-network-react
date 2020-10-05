@@ -8,6 +8,9 @@ import OtherProfile from "./other-profile";
 import Friends from "./friends";
 import FindPeople from "./find-people";
 import { Link } from "react-router-dom";
+import * as io from "socket.io-client";
+
+const socket = io.connect();
 
 export default class App extends React.Component {
     constructor(props) {

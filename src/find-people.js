@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Axios from "./axios";
 import { Link } from "react-router-dom";
+import FriendButton from "./friend-button";
 
 export default function FindPeople() {
     const [person, findPerson] = useState();
@@ -8,11 +9,11 @@ export default function FindPeople() {
     const [noMatch, setNoMatch] = useState(false);
 
     useEffect(() => {
-        // console.log("USEREFFECT");
+        // console.log("USEREFFECT", person);
         if (!person) {
             findPerson(undefined);
         }
-        console.log("INPUT VALUE", person);
+        // console.log("INPUT VALUE", person);
         if (person == "") {
             return;
         } else {
@@ -25,7 +26,7 @@ export default function FindPeople() {
                     console.log("DATA FROM SEARCH", data);
                     if (data.length == 0) {
                         setNoMatch(true);
-                        console.log("NODATA");
+                        // console.log("NODATA");
                     } else {
                         setNoMatch(false);
                     }
@@ -82,8 +83,7 @@ export default function FindPeople() {
                                                     {user.last_name}
                                                 </Link>
                                             </h3>
-                                            {/* <p>{user.bio}</p>
-                                        {!user.bio && <p>No Bio</p>} */}
+                                            <FriendButton id={user.id} />
                                         </div>
                                     </div>
                                 );

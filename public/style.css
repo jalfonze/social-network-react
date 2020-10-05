@@ -9,6 +9,10 @@ a {
     color: #7b87b6;
 }
 
+a:hover {
+    color: white;
+}
+
 .linediv {
     height: 30px;
     display: flex;
@@ -170,7 +174,7 @@ body {
 }
 
 .other-users h3 {
-    padding: 20px;
+    padding: 10px;
 }
 
 .imageBox {
@@ -195,6 +199,10 @@ body {
 .reqBtn {
     align-self: center;
     margin: 20px;
+    font-size: 8pt;
+    width: max-content;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 .other-users {
@@ -209,6 +217,16 @@ body {
 
 .friends-info {
     display: flex;
+}
+
+.friend-response {
+    cursor: pointer;
+    margin: 10px;
+    width: max-content;
+}
+
+.friend-response:hover {
+    color: #ffffff;
 }
 .req-info {
     display: flex;

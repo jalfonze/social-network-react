@@ -20,22 +20,22 @@ export default function Friends() {
     }, []);
 
     const acceptFriend = (id) => {
-        console.log("clickclick");
-        console.log(id);
+        // console.log("clickclick");
+        // console.log(id);
         dispatch(acceptRequests(id));
     };
     const deleteFriend = (id) => {
-        console.log("clickclick");
-        console.log(id);
+        // console.log("clickclick");
+        // console.log(id);
         dispatch(unFriend(id));
     };
     const denyReq = (id) => {
-        console.log("clickclick");
-        console.log(id);
+        // console.log("clickclick");
+        // console.log(id);
         dispatch(denyId(id));
     };
 
-    console.log("USERS ACTIONS", usersTrue, usersFalse);
+    // console.log("USERS ACTIONS", usersTrue, usersFalse);
 
     return (
         <React.Fragment>
@@ -60,6 +60,7 @@ export default function Friends() {
                                             </Link>
                                         </h3>
                                         <p
+                                            className="friend-response"
                                             onClick={() =>
                                                 deleteFriend(user.id)
                                             }
@@ -91,13 +92,17 @@ export default function Friends() {
                                             </Link>
                                         </h3>
                                         <p
+                                            className="friend-response"
                                             onClick={() =>
                                                 acceptFriend(user.id)
                                             }
                                         >
                                             Accept
                                         </p>
-                                        <p onClick={() => denyReq(user.id)}>
+                                        <p
+                                            className="friend-response"
+                                            onClick={() => denyReq(user.id)}
+                                        >
                                             Deny
                                         </p>
                                     </div>

@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 const compression = require("compression");
+const server = require("http").Server(app);
+const io = require("socket.io")(server, { origins: "localhost:8080" });
 const db = require("./db");
 const bc = require("./bc");
 const cookieSession = require("cookie-session");
@@ -427,6 +429,13 @@ app.get("*", function (req, res) {
     }
 });
 
-app.listen(8080, function () {
+server.listen(8080, function () {
     console.log("I'm listening.");
+});
+
+io.on("connection", function (socket) {
+    console.log(`socket with id ${socket.id} has connected`);
+    socket.on("disconnect", () => {
+        console.log(`socket with id ${socket.id} as disconnected`);
+    });
 });
