@@ -6,11 +6,12 @@ import Profile from "./profile";
 import { BrowserRouter, Route } from "react-router-dom";
 import OtherProfile from "./other-profile";
 import Friends from "./friends";
+import Chat from "./chat-room";
 import FindPeople from "./find-people";
 import { Link } from "react-router-dom";
-import * as io from "socket.io-client";
+// import * as io from "socket.io-client";
 
-const socket = io.connect();
+// const socket = io.connect();
 
 export default class App extends React.Component {
     constructor(props) {
@@ -73,15 +74,18 @@ export default class App extends React.Component {
                             width="250px"
                             height="95px"
                         ></img>
-                        <h4>
+                        <h5>
                             <Link to="/">My Profile</Link>
-                        </h4>
-                        <h4>
+                        </h5>
+                        <h5>
                             <Link to="/users">Find People</Link>
-                        </h4>
-                        <h4>
+                        </h5>
+                        <h5>
                             <Link to="/friends-list">My Friends</Link>
-                        </h4>
+                        </h5>
+                        <h5>
+                            <Link to="/chat-room">Chat Room</Link>
+                        </h5>
                         <ProfilePic
                             img_url={this.state.img_url}
                             showModal={() => this.showModal()}
@@ -118,6 +122,7 @@ export default class App extends React.Component {
                         />
                         <Route path="/users" component={FindPeople} />
                         <Route path="/friends-list" component={Friends} />
+                        <Route path="/chat-room" component={Chat} />
                     </div>
                     {this.state.showUploader && (
                         <Uploader

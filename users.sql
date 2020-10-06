@@ -28,3 +28,12 @@ CREATE TABLE friendships(
       recipient_id INT REFERENCES users(id) NOT NULL,
       accepted BOOLEAN DEFAULT false
   );
+
+
+DROP TABLE IF EXISTS chat CASCADE;
+
+CREATE TABLE chat(
+      id SERIAL PRIMARY KEY,
+      chat VARCHAR,
+      user_id INT REFERENCES users(id) NOT NULL
+  );

@@ -186,3 +186,27 @@ module.exports.matchFriend = (viewerId) => {
         [viewerId]
     );
 };
+
+module.exports.lastMsgs = () => {
+    return db.query(
+        `
+        SELECT first_name, last_name, img_url, chat
+        FROM chat
+        JOIN users
+        ON users.id = chat.user_id
+        ORDER BY chat.id DESC
+        LIMIT 10
+        `
+    );
+};
+
+module.exports.addMsg = (id, chat) => {
+    return db.query(
+        `
+        INSERT INTO chat (user_id, chat)
+        VALUES ($1, $2)
+        RETURNING user_id, chat
+        `,
+        [id, chat]
+    );
+};

@@ -87,7 +87,7 @@ body {
     justify-content: space-between;
 }
 
-.nav h4 {
+.nav h5 {
     display: flex;
     align-items: center;
 }
@@ -234,4 +234,14 @@ body {
 .req-text {
     display: flex;
     flex-direction: column;
+}
+
+.chat-container {
+    height: 300px;
+    width: 90%;
+    overflow-y: scroll;
+}
+
+.chatInfo {
+    display: flex;
 }

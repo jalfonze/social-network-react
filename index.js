@@ -20,12 +20,23 @@ const s3 = require("./s3");
 //https://s3.amazonaws.com/spicedling/
 
 app.use(compression());
-app.use(
-    cookieSession({
-        secret: "Hello There, General Kenobi",
-        maxAge: 1000 * 60 * 60 * 24 * 14,
-    })
-);
+
+// app.use(
+//     cookieSession({
+//         secret: "Hello There, General Kenobi",
+//         maxAge: 1000 * 60 * 60 * 24 * 14,
+//     })
+// );
+
+const cookieSessionMiddleware = cookieSession({
+    secret: `I'm always angry.`,
+    maxAge: 1000 * 60 * 60 * 24 * 90,
+});
+
+app.use(cookieSessionMiddleware);
+io.use(function (socket, next) {
+    cookieSessionMiddleware(socket.request, socket.request.res, next);
+});
 
 app.use(csurf());
 
@@ -435,7 +446,36 @@ server.listen(8080, function () {
 
 io.on("connection", function (socket) {
     console.log(`socket with id ${socket.id} has connected`);
+    if (!socket.request.session.userId) {
+        console.log("DISCONNECTED");
+        return socket.disconnect(true);
+    }
     socket.on("disconnect", () => {
-        console.log(`socket with id ${socket.id} as disconnected`);
+        console.log(`socket with id ${socket.id} has disconnected`);
+    });
+
+    db.lastMsgs().then((response) => {
+        console.log("LAST CHATS", response.rows);
+
+        io.sockets.emit("chatMessages", response.rows.reverse());
+    });
+
+    socket.on("chat", (newMsg) => {
+        // console.log("msg from chat: ", newMsg);
+        // console.log("user who snt message: ", socket.request.session.userId);
+        db.addMsg(socket.request.session.userId, newMsg).then((response) => {
+            db.getUserInfo(socket.request.session.userId).then((response) => {
+                console.log("USUSUSUSSU", response.rows[0]);
+                const firstObj = response.rows[0];
+                const obj = { ...newObj, ...firstObj };
+                io.sockets.emit("addMessage", obj);
+            });
+            const newObj = {
+                user_id: response.rows[0].user_id,
+                chat: response.rows[0].chat,
+            };
+            console.log("NEW MESSAGE", response.rows[0]);
+            // io.sockets.emit("addMessage", response.rows[0]);
+        });
     });
 });

@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import Welcome from "./welcome";
 import App from "./app";
-
+import { init } from "./socket";
 import { createStore, applyMiddleware } from "redux";
 import reduxPromise from "redux-promise";
 import { composeWithDevTools } from "redux-devtools-extension";
@@ -19,6 +19,7 @@ let component;
 if (location.pathname === "/welcome") {
     component = <Welcome />;
 } else {
+    init(store);
     component = (
         <Provider store={store}>
             <App />;

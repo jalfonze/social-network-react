@@ -50,3 +50,18 @@ export async function denyId(id) {
         userId: id,
     };
 }
+
+export async function chatMessages(msgs) {
+    console.log("ACTIONMSGS", msgs);
+    return {
+        type: "CHAT_MESSAGES",
+        chatInfo: msgs,
+    };
+}
+export async function chatMessage(msg) {
+    console.log("NEWMSG", msg);
+    return {
+        type: "NEW_MESSAGE",
+        newMsg: msg,
+    };
+}
