@@ -189,6 +189,11 @@ body {
     overflow: hidden;
     object-fit: cover;
     border: solid 1px black;
+    margin: 20px;
+}
+.imageBoxSmallFriend {
+    display: flex;
+    width: 100%;
 }
 
 .editBtn {
@@ -240,8 +245,43 @@ body {
     height: 300px;
     width: 90%;
     overflow-y: scroll;
+    margin: 20px;
+    background-color: #515874;
+    border-radius: 20px;
 }
 
 .chatInfo {
     display: flex;
+}
+
+.chatroom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.chatroom form {
+    margin: 30px;
+}
+.chatroom h2 {
+    margin: 30px;
+}
+
+.posts-main {
+    display: flex;
+    /* justify-content: center; */
+    margin: 10px;
+    width: 60%;
+}
+
+.posts-info p {
+    padding-top: 20px;
+}
+
+.wall-post-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }

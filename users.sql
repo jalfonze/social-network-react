@@ -37,3 +37,12 @@ CREATE TABLE chat(
       chat VARCHAR,
       user_id INT REFERENCES users(id) NOT NULL
   );
+
+DROP TABLE IF EXISTS posts CASCADE;
+
+CREATE TABLE posts(
+      id SERIAL PRIMARY KEY,
+      post VARCHAR,
+      wall_owner INT REFERENCES users(id) NOT NULL,
+      author_id INT REFERENCES users(id) NOT NULL
+  );

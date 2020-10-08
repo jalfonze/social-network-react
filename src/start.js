@@ -22,7 +22,7 @@ if (location.pathname === "/welcome") {
     init(store);
     component = (
         <Provider store={store}>
-            <App />;
+            <App />
         </Provider>
     );
 }

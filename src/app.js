@@ -63,6 +63,10 @@ export default class App extends React.Component {
         });
     }
 
+    logOut() {
+        axios.get("/logout");
+    }
+
     render() {
         return (
             <React.Fragment>
@@ -85,6 +89,11 @@ export default class App extends React.Component {
                         </h5>
                         <h5>
                             <Link to="/chat-room">Chat Room</Link>
+                        </h5>
+                        <h5>
+                            <a href="/welcome" onClick={() => this.logOut()}>
+                                Log Out
+                            </a>
                         </h5>
                         <ProfilePic
                             img_url={this.state.img_url}

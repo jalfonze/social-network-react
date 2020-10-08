@@ -16,6 +16,7 @@ const multer = require("multer");
 const uidSafe = require("uid-safe");
 const path = require("path");
 const s3 = require("./s3");
+const { error } = require("console");
 
 //https://s3.amazonaws.com/spicedling/
 
@@ -292,10 +293,10 @@ app.post("/updateBio", (req, res) => {
 });
 
 app.get("/user/:id.json", (req, res) => {
-    console.log("OTHER PROFILE ID", req.params.id);
+    // console.log("OTHER PROFILE ID", req.params.id);
     db.getUserInfo(req.params.id)
         .then((response) => {
-            console.log("OTHER PROFILE INFO", response.rows[0]);
+            // console.log("OTHER PROFILE INFO", response.rows[0]);
             let otherUserInfo = response.rows[0];
             if (req.session.userId == req.params.id || !response.rows[0]) {
                 // console.log("TRUE");
@@ -375,7 +376,7 @@ app.get("/initial-status/:otherId.json", (req, res) => {
 });
 
 app.post("/send-request", (req, res) => {
-    console.log(req.body);
+    // console.log(req.body);
     if (req.body.btnMsg === "Send friend request") {
         db.sendRequest(req.body.viewerId, req.session.userId).then(
             (response) => {
@@ -425,11 +426,105 @@ app.post("/send-request", (req, res) => {
 
 app.get("/match-friends", (req, res) => {
     db.matchFriend(req.session.userId).then((response) => {
-        console.log("MATCH FRIENDS", response.rows);
+        // console.log("MATCH FRIENDS", response.rows);
         let friendsArr = { users: response.rows };
 
         res.json(friendsArr);
     });
+});
+
+app.get("/get-posts/:wallId.json", (req, res) => {
+    console.log("WALL ID", req.params.wallId);
+    if (req.params.wallId == "str") {
+        console.log("ITS STRING!");
+        db.getPosts(req.session.userId).then((response) => {
+            console.log("POST INFO", response.rows);
+            res.json(response.rows);
+        });
+    } else {
+        db.getPosts(req.params.wallId).then((response) => {
+            // console.log("POST INFO", response.rows);
+            res.json(response.rows);
+        });
+    }
+});
+
+app.post("/add-post", (req, res) => {
+    console.log("WALL ID POST", req.body);
+    if (req.body.id == "str") {
+        db.addPost(req.body.post, req.session.userId, req.session.userId)
+            .then((response) => {
+                console.log("ADD POST ROWS", response.rows);
+                const newObj = {
+                    post: response.rows[0].post,
+                    wall_owner: response.rows[0].wall_owner,
+                    author_id: response.rows[0].authoer_id,
+                };
+                db.getUserInfo(req.session.userId)
+                    .then((response) => {
+                        const firstObj = response.rows[0];
+                        const obj = { ...newObj, ...firstObj };
+                        res.json({ obj });
+                    })
+                    .catch((err) => console.log("ERROR IN GET POST", err));
+            })
+            .catch((err) => console.log("ERROR IN GET POST 2", err));
+    } else {
+        db.addPost(req.body.post, req.body.id, req.session.userId)
+            .then((response) => {
+                console.log("ADD POST ROWS", response.rows);
+                const newObj = {
+                    post: response.rows[0].post,
+                    wall_owner: response.rows[0].wall_owner,
+                    author_id: response.rows[0].authoer_id,
+                };
+                db.getUserInfo(req.session.userId)
+                    .then((response) => {
+                        // console.log("USUSUSUSSU", response.rows[0]);
+                        const firstObj = response.rows[0];
+                        const obj = { ...newObj, ...firstObj };
+                        res.json({ obj });
+                    })
+                    .catch((err) => console.log("ERROR IN GET POST", err));
+                // console.log("POST INFO", response.rows);
+            })
+            .catch((err) => console.log("ERROR IN GET POST 2", err));
+    }
+});
+
+app.get("/user-friends/:userFrId.json", (req, res) => {
+    // console.log("USER FRIEND ID", req.params.userFrId);
+    let other = parseInt(req.params.userFrId);
+    db.getUserFriends(req.params.userFrId)
+        .then((response) => {
+            console.log(response.rows);
+            let friends = response.rows;
+            let arrOfFriendId = [];
+            friends.map((friend) => {
+                // console.log("FRIEEEEEEEND", friend);
+                if (friend.sender_id !== other) {
+                    console.log("Mapped Friend", friend.sender_id);
+                    arrOfFriendId.push(friend.sender_id);
+                } else if (friend.recipient_id !== other) {
+                    arrOfFriendId.push(friend.recipient_id);
+                }
+            });
+            db.getFriendInfo(arrOfFriendId)
+                .then((response) => {
+                    console.log("USER FRIEND INFO", response.rows);
+                    res.json(response.rows);
+                })
+                .catch((err) => console.log("ERROR I FRIEND", err));
+            console.log("ARR ONE", arrOfFriendId);
+        })
+        .catch((err) => console.log("ERR", err));
+});
+
+app.get("/logout", (req, res) => {
+    console.log("click");
+    req.session = null;
+    res.redirect("/welcome");
+    console.log(req.session);
 });
 
 app.get("*", function (req, res) {
@@ -455,7 +550,7 @@ io.on("connection", function (socket) {
     });
 
     db.lastMsgs().then((response) => {
-        console.log("LAST CHATS", response.rows);
+        // console.log("LAST CHATS", response.rows);
 
         io.sockets.emit("chatMessages", response.rows.reverse());
     });
@@ -465,7 +560,7 @@ io.on("connection", function (socket) {
         // console.log("user who snt message: ", socket.request.session.userId);
         db.addMsg(socket.request.session.userId, newMsg).then((response) => {
             db.getUserInfo(socket.request.session.userId).then((response) => {
-                console.log("USUSUSUSSU", response.rows[0]);
+                // console.log("USUSUSUSSU", response.rows[0]);
                 const firstObj = response.rows[0];
                 const obj = { ...newObj, ...firstObj };
                 io.sockets.emit("addMessage", obj);
@@ -474,7 +569,7 @@ io.on("connection", function (socket) {
                 user_id: response.rows[0].user_id,
                 chat: response.rows[0].chat,
             };
-            console.log("NEW MESSAGE", response.rows[0]);
+            // console.log("NEW MESSAGE", response.rows[0]);
             // io.sockets.emit("addMessage", response.rows[0]);
         });
     });

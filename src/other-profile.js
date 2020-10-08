@@ -1,6 +1,8 @@
 import React from "react";
 import axios from "./axios";
 import FriendButton from "./friend-button";
+import WallPost from "./wall-post";
+import UserFriends from "./user-friends";
 
 export default class OtherProfile extends React.Component {
     constructor(props) {
@@ -56,6 +58,7 @@ export default class OtherProfile extends React.Component {
                         {!this.state.friends && (
                             <h3>Must be friends to see bio</h3>
                         )}
+
                         {this.state.id && (
                             <FriendButton
                                 {...this.state}
@@ -64,6 +67,17 @@ export default class OtherProfile extends React.Component {
                         )}
                     </div>
                 </div>
+                <UserFriends {...this.props.match} {...this.state} />
+                {this.state.friends && (
+                    <div>
+                        <WallPost {...this.props.match} {...this.state} />
+                    </div>
+                )}
+                {!this.state.friends && (
+                    <div>
+                        <h2>Must be friends to write on their wall</h2>
+                    </div>
+                )}
             </React.Fragment>
         );
     }

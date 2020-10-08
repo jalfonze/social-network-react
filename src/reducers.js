@@ -6,8 +6,24 @@ export default function (state = {}, action) {
         });
     }
 
+    if (action.type == "GET_POST") {
+        // console.log("REDUCER POSTINFO", action.posts);
+        state = {
+            ...state,
+            posts: [...action.posts],
+        };
+    }
+    if (action.type == "ADD_POST") {
+        // console.log("REDUCER POSTINFO", action.newPost);
+        state = {
+            ...state,
+            posts: [action.newPost, ...state.posts],
+        };
+        // console.log("state posts", state.posts);
+    }
+
     if (action.type == "CHAT_MESSAGES") {
-        console.log("REDUCER CHATINFO", action.chatInfo);
+        // console.log("REDUCER CHATINFO", action.chatInfo);
         state = {
             ...state,
             chatInfo: action.chatInfo,
@@ -52,6 +68,6 @@ export default function (state = {}, action) {
             }),
         };
     }
-    console.log("CURRENT STATE ", state);
+    // console.log("CURRENT STATE ", state);
     return state;
 }

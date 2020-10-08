@@ -29,37 +29,39 @@ export default function Chat() {
 
     return (
         <React.Fragment>
-            <p>hello chatrooom</p>
-            <div className="chat-container" ref={elemRef}>
-                {chatMessages &&
-                    chatMessages.map((info, i) => {
-                        return (
-                            <div className="chatInfo" key={i}>
-                                <div key={i} className="imageBoxSmall">
-                                    <img
-                                        width="100px"
-                                        key={i}
-                                        src={info.img_url}
-                                    />
+            <div className="chatroom">
+                <h2>Welcome to the chatroom!</h2>
+                <div className="chat-container" ref={elemRef}>
+                    {chatMessages &&
+                        chatMessages.map((info, i) => {
+                            return (
+                                <div className="chatInfo" key={i}>
+                                    <div key={i} className="imageBoxSmall">
+                                        <img
+                                            width="100px"
+                                            key={i}
+                                            src={info.img_url}
+                                        />
+                                    </div>
+                                    <div>
+                                        <h3 key={info.id}>
+                                            {info.first_name} {info.last_name}
+                                        </h3>
+                                        <p key={i}>{info.chat}</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3 key={info.id}>
-                                        {info.first_name} {info.last_name}
-                                    </h3>
-                                    <p key={i}>{info.chat}</p>
-                                </div>
-                            </div>
-                        );
-                    })}
+                            );
+                        })}
+                </div>
+                <form>
+                    <textarea
+                        rows="3"
+                        cols="70"
+                        placeholder="Write your thoughts "
+                        onKeyDown={keyCheck}
+                    ></textarea>
+                </form>
             </div>
-            <form>
-                <textarea
-                    rows="3"
-                    cols="70"
-                    placeholder="Write your thoughts "
-                    onKeyDown={keyCheck}
-                ></textarea>
-            </form>
         </React.Fragment>
     );
 }

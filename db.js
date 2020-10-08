@@ -210,3 +210,54 @@ module.exports.addMsg = (id, chat) => {
         [id, chat]
     );
 };
+
+module.exports.getPosts = (id) => {
+    console.log("WALL ID DB", id);
+    return db.query(
+        `
+        SELECT author_id, first_name, last_name, img_url, post, wall_owner 
+        FROM posts
+        JOIN users
+        ON users.id = posts.author_id
+        WHERE wall_owner = ($1)
+        ORDER BY posts.id DESC
+        LIMIT 5
+        `,
+
+        [id]
+    );
+};
+module.exports.addPost = (post, id, user) => {
+    console.log("WALL POST POST ID DB", post, id, user);
+    return db.query(
+        `
+        INSERT INTO posts (post, wall_owner, author_id)
+        VALUES ($1, $2, $3)
+        RETURNING post, wall_owner, author_id
+        `,
+        [post, id, user]
+    );
+};
+
+module.exports.getUserFriends = (profileId) => {
+    // console.log(recieveId, senderId);
+    return db.query(
+        `
+        SELECT * FROM friendships
+        WHERE (recipient_id = $1 OR sender_id = $1)
+        AND accepted = true
+        `,
+        [profileId]
+    );
+};
+
+module.exports.getFriendInfo = (id) => {
+    return db.query(
+        `
+        SELECT id, first_name, last_name, img_url
+        FROM users
+        where id = ANY ($1)
+        `,
+        [id]
+    );
+};

@@ -2,6 +2,7 @@ import React from "react";
 // import axios from "./axios";
 // import ProfilePic from "./profile-pic";
 import BioEdit from "./bio-edit";
+import WallPost from "./wall-post";
 
 export default class Profile extends React.Component {
     constructor(props) {
@@ -37,6 +38,9 @@ export default class Profile extends React.Component {
                         </h1>
                         <BioEdit bio={this.state.bio} />
                     </div>
+                </div>
+                <div>
+                    <WallPost {...this.state} />
                 </div>
             </React.Fragment>
         );
